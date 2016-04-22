@@ -1,0 +1,32 @@
+	public int bestProfit(int[] priceHistory) {
+
+        int profit = -1;
+        // lower index
+        int i = 0;
+        // higher index
+        int j = 0;
+        
+        while (j < priceHistory.length && i < priceHistory.length) {
+            // find lower price
+            while (i + 1 < priceHistory.length && priceHistory[i] > priceHistory[i + 1]) {
+                i++;
+            }
+            // find next max price
+            j = i + 1;
+            while (j + 1 < priceHistory.length && priceHistory[j] < priceHistory[j + 1]) {
+                j++;
+            }
+
+            // check if any index got to the end
+            // case not calculate the new profit value
+            if (j < priceHistory.length && i < priceHistory.length) {
+                int aux = priceHistory[j] - priceHistory[i];
+                if (aux > profit) {
+                    profit = aux;
+                }
+            }
+            i = j + 1;
+        }
+
+        return profit;
+    }

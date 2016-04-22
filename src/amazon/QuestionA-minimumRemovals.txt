@@ -1,0 +1,55 @@
+	public int minimumRemovals(String s1, String s2) {
+
+        // check data
+        if (s1 == null || s2 == null) {
+            throw new IllegalArgumentException("the string parameter must be a valid string");
+        }
+
+        int i = 0;
+        int j = 0;
+        int returnValue = 0;
+        while (i < s1.length() && j < s2.length()) {
+            
+            // increments both indexes while both characteres are the same
+            while(i < s1.length() && j < s2.length() && s1.charAt(i) == s2.charAt(j)) {
+                i++;
+                j++;
+            }
+            
+            if(i < s1.length() && s1.charAt(i) == s1.charAt(i-1)) {
+                // case the character in the second string changes 
+                // we must count the characteres in to remove in the first string
+                while(i < s1.length() && s1.charAt(i) == s1.charAt(i-1)) {
+                    i++;
+                    returnValue++;
+                }
+            } else if( j < s2.length() && s2.charAt(j) == s2.charAt(j-1)) {
+                // case the character in the first string changes 
+                // we must count the characteres to remove in the second string
+                while( j < s2.length() && s2.charAt(j) == s2.charAt(j-1)) {
+                    j++;
+                    returnValue++;
+                }
+            }
+            
+            // check ending condition
+            // this condition means that the new last character in each string are diferent 
+            if(i < s1.length() && j < s2.length()) {
+                if(s1.charAt(i) != s2.charAt(j)) {
+                    return -1;
+                }
+            } else if(i < s1.length()) {
+                if(s1.charAt(i) != s2.charAt(j-1)) {
+                    return -1;
+                }
+            } else if(j < s2.length()) {
+                if(s1.charAt(i-1) != s2.charAt(j)) {
+                    return -1;
+                }
+            }
+        }
+        
+        // return the final characters count
+        return returnValue;
+
+    }
