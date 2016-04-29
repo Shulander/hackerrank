@@ -23,19 +23,23 @@ public class GenaPlayingHanoi2 {
 	}
 
 	private int solveHanoiImpl(int n) {
-		if (n >= diskPosition.length) {
+		if (n <= 0) {
 			return 0;
 		}
 		int returnValue = 0;
 		if (diskPosition[n] != 0) {
-			int moves = n - 1;
-			int tmp = returnTmpRod(0, diskPosition[0]);
+			System.out.println("move " + n + " to 0");
+			int moves = rods[0].size() - (diskPosition.length - 1 - n);
+			int tmp = returnEmptyTmpRod(n, 0, diskPosition[n]);
+			while (tmp == -1) {
+				returnValue = moveLowerValues();
+				tmp = returnEmptyTmpRod(n, 0, diskPosition[n]);
+			}
 			returnValue += move(moves, 0, tmp);
 			returnValue += move(rods[diskPosition[n]].size(), diskPosition[n], 0);
-			returnValue += move(moves, tmp, 0);
-
+//			returnValue += move(moves, tmp, 0);
 		}
-		returnValue += solveHanoiImpl(n + 1);
+		returnValue += solveHanoiImpl(n - 1);
 
 		return returnValue;
 	}
@@ -45,17 +49,23 @@ public class GenaPlayingHanoi2 {
 			return 0;
 		}
 		if (elemToMove == 1) {
+			int returnValue = 0;
+			while (!rods[to].isEmpty() && !rods[from].isEmpty() && rods[from].peek() > rods[to].peek()) {
+				returnValue += moveLowerValues();
+			}
+			
 			Integer diskValue = rods[from].pop();
 			rods[to].push(diskValue);
 			diskPosition[diskValue] = to;
 			printRods();
-			return 1;
+			return returnValue+1;
 		}
 
+		int returnValue = 0;
 		int tmp = returnTmpRod(from, to);
-		int returnValue = move(elemToMove - 1, from, tmp);
+		returnValue += move(elemToMove - 1, from, tmp);
 		returnValue += move(1, from, to);
-		returnValue += move(elemToMove - 1, tmp, to);
+//		returnValue += move(elemToMove - 1, tmp, to);
 		return returnValue;
 	}
 
@@ -68,18 +78,20 @@ public class GenaPlayingHanoi2 {
 		return -1;
 	}
 
-	private int returnEmptyTmpRod(int from, int to) {
-		for (int i = 0; i < 4; i++) {
-			if (i != from && i != to && rods[i].empty()) {
+	private int returnEmptyTmpRod(int value, int from, int to) {
+		int count=0;
+		int returnValue = -1;
+		for (int i = 1; i < 4 && count<2; i++) {
+			if (i != from && i != to && (rods[i].empty() || rods[i].peek() > value)) {
 				return i;
 			}
 		}
-		return -1;
+		return count == 2 ? returnValue : -1;
 	}
 
 	public int solveHanoi() {
 		printRods();
-		int returnValue = solveHanoiImpl(1);
+		int returnValue = solveHanoiImpl(diskPosition.length - 1);
 		printRods();
 		return returnValue;
 	}
@@ -107,12 +119,25 @@ public class GenaPlayingHanoi2 {
 	private void printRods() {
 		System.out.println("--------------------------");
 		for (int i = 0; i < rods.length; i++) {
-			System.out.print(i+": ");
+			System.out.print(i + ": ");
 			for (Integer rod : rods[i]) {
-				System.out.print(rod+" ");
+				System.out.print(rod + " ");
 			}
 			System.out.println("");
 		}
 		System.out.println("--------------------------");
+	}
+
+	private int moveLowerValues() {
+		int returnValue = 0;
+
+		for (int i = 1; i < diskPosition.length - 1; i++) {
+			if(diskPosition[i] != diskPosition[i+1]) {
+				System.out.println("moving lower elements "+i+"["+diskPosition[i]+"] to "+(i+1)+"["+diskPosition[i+1]+"]");
+				return move(i, diskPosition[i], diskPosition[i+1]);
+			}
+		}
+
+		return returnValue;
 	}
 }
