@@ -29,12 +29,12 @@ public class GenaPlayingHanoi2 {
 		int returnValue = 0;
 		if (diskPosition[n] != 0) {
 			System.out.println("move " + n + " to 0");
-			int moves = rods[0].size() - (diskPosition.length - 1 - n);
 			int tmp = returnEmptyTmpRod(n, 0, diskPosition[n]);
 			while (tmp == -1) {
 				returnValue = moveLowerValues();
 				tmp = returnEmptyTmpRod(n, 0, diskPosition[n]);
 			}
+			int moves = rods[0].size() - (diskPosition.length - 1 - n);
 			returnValue += move(moves, 0, tmp);
 			returnValue += move(rods[diskPosition[n]].size(), diskPosition[n], 0);
 //			returnValue += move(moves, tmp, 0);
@@ -79,14 +79,22 @@ public class GenaPlayingHanoi2 {
 	}
 
 	private int returnEmptyTmpRod(int value, int from, int to) {
-		int count=0;
-		int returnValue = -1;
-		for (int i = 1; i < 4 && count<2; i++) {
-			if (i != from && i != to && (rods[i].empty() || rods[i].peek() > value)) {
+		int ini = 0;
+		int tmp;
+		for (int i = 0; i < 4; i++) {
+			tmp = (ini+i)%4;
+			if (tmp != from && tmp != to && rods[tmp].empty()) {
 				return i;
 			}
 		}
-		return count == 2 ? returnValue : -1;
+		for (int i = 0; i < 4; i++) {
+			tmp = (ini+i)%4;
+			if (tmp != from && tmp != to && rods[tmp].peek() > value) {
+				return i;
+			}
+		}
+		
+		return -1;
 	}
 
 	public int solveHanoi() {
@@ -134,10 +142,30 @@ public class GenaPlayingHanoi2 {
 		for (int i = 1; i < diskPosition.length - 1; i++) {
 			if(diskPosition[i] != diskPosition[i+1]) {
 				System.out.println("moving lower elements "+i+"["+diskPosition[i]+"] to "+(i+1)+"["+diskPosition[i+1]+"]");
-				return move(i, diskPosition[i], diskPosition[i+1]);
+				return move2(i, diskPosition[i], diskPosition[i+1]);
 			}
 		}
 
+		return returnValue;
+	}
+	
+	private int move2(int elemToMove, int from, int to) {
+		if (elemToMove <= 0) {
+			return 0;
+		}
+		if (elemToMove == 1) {
+			Integer diskValue = rods[from].pop();
+			rods[to].push(diskValue);
+			diskPosition[diskValue] = to;
+			printRods();
+			return 1;
+		}
+
+		int returnValue = 0;
+		int tmp = returnTmpRod(from, to);
+		returnValue += move2(elemToMove - 1, from, tmp);
+		returnValue += move2(1, from, to);
+		returnValue += move2(elemToMove - 1, tmp, to);
 		return returnValue;
 	}
 }
