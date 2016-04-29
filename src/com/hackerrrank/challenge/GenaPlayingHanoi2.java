@@ -1,0 +1,118 @@
+package com.hackerrrank.challenge;
+
+import java.util.Scanner;
+import java.util.Stack;
+
+/**
+ * https://www.hackerrank.com/contests/world-codesprint-april/challenges/gena
+ *
+ * Sample Input 3 1 4 1
+ *
+ * Sample Output 3
+ *
+ * @author Shulander
+ */
+public class GenaPlayingHanoi2 {
+
+	private final Stack<Integer>[] rods;
+	private final int[] diskPosition;
+
+	private GenaPlayingHanoi2(Stack[] rods, int[] diskPosition) {
+		this.rods = rods.clone();
+		this.diskPosition = diskPosition.clone();
+	}
+
+	private int solveHanoiImpl(int n) {
+		if (n >= diskPosition.length) {
+			return 0;
+		}
+		int returnValue = 0;
+		if (diskPosition[n] != 0) {
+			int moves = n - 1;
+			int tmp = returnTmpRod(0, diskPosition[0]);
+			returnValue += move(moves, 0, tmp);
+			returnValue += move(rods[diskPosition[n]].size(), diskPosition[n], 0);
+			returnValue += move(moves, tmp, 0);
+
+		}
+		returnValue += solveHanoiImpl(n + 1);
+
+		return returnValue;
+	}
+
+	private int move(int elemToMove, int from, int to) {
+		if (elemToMove <= 0) {
+			return 0;
+		}
+		if (elemToMove == 1) {
+			Integer diskValue = rods[from].pop();
+			rods[to].push(diskValue);
+			diskPosition[diskValue] = to;
+			printRods();
+			return 1;
+		}
+
+		int tmp = returnTmpRod(from, to);
+		int returnValue = move(elemToMove - 1, from, tmp);
+		returnValue += move(1, from, to);
+		returnValue += move(elemToMove - 1, tmp, to);
+		return returnValue;
+	}
+
+	private int returnTmpRod(int from, int to) {
+		for (int i = 0; i < 4; i++) {
+			if (i != from && i != to) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	private int returnEmptyTmpRod(int from, int to) {
+		for (int i = 0; i < 4; i++) {
+			if (i != from && i != to && rods[i].empty()) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	public int solveHanoi() {
+		printRods();
+		int returnValue = solveHanoiImpl(1);
+		printRods();
+		return returnValue;
+	}
+
+	public static void main(String[] args) {
+		Scanner in = new Scanner(System.in);
+		int n = in.nextInt();
+		Stack[] rods = new Stack[4];
+		int[] diskPosition = new int[n + 1];
+		for (int i = 0; i < rods.length; i++) {
+			rods[i] = new Stack<>();
+		}
+		diskPosition[0] = -1;
+		for (int i = 1; i <= n; i++) {
+			int value = in.nextInt() - 1;
+			rods[value].add(0, i);
+			diskPosition[i] = value;
+		}
+
+		GenaPlayingHanoi2 hanoi = new GenaPlayingHanoi2(rods, diskPosition);
+
+		System.out.println(hanoi.solveHanoi());
+	}
+
+	private void printRods() {
+		System.out.println("--------------------------");
+		for (int i = 0; i < rods.length; i++) {
+			System.out.print(i+": ");
+			for (Integer rod : rods[i]) {
+				System.out.print(rod+" ");
+			}
+			System.out.println("");
+		}
+		System.out.println("--------------------------");
+	}
+}
