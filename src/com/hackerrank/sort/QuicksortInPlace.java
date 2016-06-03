@@ -36,8 +36,8 @@ public class QuicksortInPlace {
         if (ini >= end) {
             return;
         }
-        int i = 0;
-        int j = 0;
+        int i = ini;
+        int j = ini;
         for (; j < end; j++) {
             if (arrayValuesA[j] <= arrayValuesA[end]) {
                 swap(arrayValuesA, i, j);

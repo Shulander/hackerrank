@@ -3,7 +3,24 @@ package com.hackerrank.algorithms.sorting;
 import java.util.Scanner;
 
 /**
- *
+ * https://www.hackerrank.com/challenges/bigger-is-greater
+ * https://www.hackerrank.com/challenges/bigger-is-greater/submissions/code/21525491
+ * 
+ * Sample Input
+ * 5
+ * ab
+ * bb
+ * hefg
+ * dhck
+ * dkhc
+ * 
+ * Sample Output
+ * ba
+ * no answer
+ * hegf
+ * dhkc
+ * hcdk
+ * 
  * @author Shulander
  */
 public class BiggerIsGreater {
@@ -25,7 +42,7 @@ public class BiggerIsGreater {
         if (changedIdx < 0) {
             return "no answer";
         }
-        quickSort(strArray, changedIdx+1, strArray.length - 1);
+        quickSort(strArray, changedIdx + 1, strArray.length - 1);
         return new String(strArray);
     }
 
@@ -33,15 +50,22 @@ public class BiggerIsGreater {
         if (startIdx < 0) {
             return startIdx;
         }
-        for (int comparableIdx = startIdx - 1; comparableIdx >= 0; comparableIdx--) {
-            if (strArray[startIdx] > strArray[comparableIdx]) {
-                char aux = strArray[startIdx];
-                strArray[startIdx] = strArray[comparableIdx];
-                strArray[comparableIdx] = aux;
-                return comparableIdx;
+        int idxFound = -1;
+        int idxFrom = -1;
+        for (; startIdx > 0 && startIdx > idxFound; startIdx--) {
+            for (int comparableIdx = startIdx - 1; comparableIdx >= 0; comparableIdx--) {
+                if (strArray[startIdx] > strArray[comparableIdx] && comparableIdx > idxFound) {
+                    idxFound = comparableIdx;
+                    idxFrom = startIdx;
+                }
             }
         }
-        return pivotLeastValuable(strArray, startIdx - 1);
+        if (idxFound > -1) {
+            char aux = strArray[idxFrom];
+            strArray[idxFrom] = strArray[idxFound];
+            strArray[idxFound] = aux;
+        }
+        return idxFound;
     }
 
     private static void quickSort(char[] arrayValuesA, int ini, int end) {
