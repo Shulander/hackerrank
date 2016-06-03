@@ -1,4 +1,4 @@
-package com.hackerrrank.challenge;
+package com.hackerrank.challenge;
 
 import java.util.HashSet;
 import java.util.Scanner;

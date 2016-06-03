@@ -1,4 +1,4 @@
-package com.hackerrrank.challenge;
+package com.hackerrank.challenge;
 
 import java.util.Scanner;
 import java.util.Stack;
