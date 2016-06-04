@@ -4,6 +4,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Scanner;
 
@@ -14,7 +15,9 @@ import java.util.Scanner;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @interface FamilyBudget {
+
     String userRole() default "GUEST";
+
     int budgetLimit() default 100;
 }
 
@@ -36,6 +39,7 @@ class FamilyMember {
 }
 
 public class Annotations {
+
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
         int testCases = Integer.parseInt(in.nextLine());
@@ -47,22 +51,21 @@ public class Annotations {
                 Method[] methods = annotatedClass.getMethods();
                 for (Method method : methods) {
                     if (method.isAnnotationPresent(FamilyBudget.class)) {
-                        FamilyBudget family = method
-                                .getAnnotation(FamilyBudget.class);
+                        FamilyBudget family = method.getAnnotation(FamilyBudget.class);
                         String userRole = family.userRole();
                         int budgetLimit = family.budgetLimit();
                         if (userRole.equals(role)) {
-                            if(spend<=budgetLimit){
-                                method.invoke(FamilyMember.class.newInstance(),
-                                        budgetLimit, spend);
-                            }else{
+                            if (spend <= budgetLimit) {
+                                method.invoke(FamilyMember.class.newInstance(), budgetLimit, spend);
+                            } else {
                                 System.out.println("Budget Limit Over");
                             }
                         }
                     }
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (SecurityException | InstantiationException | IllegalAccessException 
+                | IllegalArgumentException | InvocationTargetException ex) {
+                ex.printStackTrace();
             }
             testCases--;
         }
