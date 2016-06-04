@@ -1,4 +1,4 @@
-package com.hackerrank.advanced;
+package com.hackerrank.java.advanced;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
