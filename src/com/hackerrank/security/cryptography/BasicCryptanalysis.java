@@ -1,8 +1,8 @@
 package com.hackerrank.security.cryptography;
 
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -21,18 +21,22 @@ public class BasicCryptanalysis {
 
         try {
             DictionaryAnalysis analysis = new DictionaryAnalysis();
-            Path dictionaryFile = FileSystems.getDefault().getPath("src", "com", "hackerrank", "security", "cryptography", "dictionary.lst");
-            Path inputFile = FileSystems.getDefault().getPath("src", "com", "hackerrank", "security", "cryptography", "BasicCryptanalysisInput.txt");
+
+            InputStream dictionaryFile = BasicCryptanalysis.class.getResourceAsStream("dictionary.lst");
+            InputStream inputFile = BasicCryptanalysis.class.getResourceAsStream("BasicCryptanalysisInput.txt");
 
             analysis.loadDictionaryFile(dictionaryFile);
 
-            Scanner sc = new Scanner(inputFile);
-            String strInput = sc.nextLine();
-            sc.close();
+            Scanner in = new Scanner(inputFile);
+//            Scanner in = new Scanner(System.in);
+            String strInput = in.nextLine();
 
             analysis.processInputText(strInput);
 
             analysis.process();
+
+            String str = analysis.translate(strInput);
+            System.out.println(str);
         } catch (IOException ex) {
             System.out.println("error loading file: " + ex.getMessage());
         }
@@ -58,11 +62,11 @@ public class BasicCryptanalysis {
             dictionaryMap = new HashMap<>();
         }
 
-        public void loadDictionaryFile(Path pathFile) throws IOException {
+        public void loadDictionaryFile(InputStream pathFile) throws IOException {
             Scanner sc = new Scanner(pathFile);
             while (sc.hasNextLine()) {
                 String str = sc.nextLine();
-                dictionaryList.add(str);
+                dictionaryList.add(str.toLowerCase());
                 if (!sizeDictionaryMap.containsKey(str.length())) {
                     sizeDictionaryMap.put(str.length(), new LinkedList<>());
                 }
@@ -75,7 +79,7 @@ public class BasicCryptanalysis {
             Scanner sc = new Scanner(strInput);
             while (sc.hasNext()) {
                 String str = sc.next();
-                wordList.add(str);
+                wordList.add(str.toLowerCase());
                 if (!wordMap.containsKey(str.length())) {
                     wordMap.put(str.length(), new LinkedList<>());
                 }
@@ -85,40 +89,59 @@ public class BasicCryptanalysis {
         }
 
         public void process() {
+            List<String> remainingWords = new LinkedList<>();
             for (String word : wordList) {
-                buildDictionary(word);
+                if (!buildDictionaryKnownWords(word)) {
+                    remainingWords.add(word);
+                }
             }
+
+            boolean hasChanged;
+            do {
+                hasChanged = false;
+                List<String> finalWords = new LinkedList<>();
+                for (String word : remainingWords) {
+                    if (!buildDictionaryProbableWords(word)) {
+                        finalWords.add(word);
+                    } else {
+                        hasChanged = true;
+                    }
+                }
+                remainingWords = finalWords;
+            } while (hasChanged && !remainingWords.isEmpty());
         }
 
-        private void buildDictionary(String word) {
+        private boolean buildDictionaryKnownWords(String word) {
             List<String> possiblewords = sizeDictionaryMap.get(word.length());
             if (possiblewords == null) {
-                return;
+                return false;
             }
             if (possiblewords.size() == 1) {
                 addMap(word, possiblewords.get(0));
             } else {
-                int[] doublePosition = hasDoubleChar(word, 0);
-                if (doublePosition[0] != -1) {
-                    
-                    String found = null;
-                    int foundIdx = 0;
-                    for (String possibleword : possiblewords) {
-                        int[] foundDouble = hasDoubleChar(possibleword, doublePosition[0]);
-                            
-                        if (Arrays.equals(foundDouble, doublePosition)) {
-                            int newIdx = calculatePossibleIndex(word, possibleword);
-                            if (newIdx > foundIdx) {
-                                found = possibleword;
-                                foundIdx = newIdx;
-                            }
-                        }
-                    }
-                    if (found != null && foundIdx >= 0) {
-                        addMap(word, found);
-                    }
+                String[] doubleCharList = filterWordsWithDoubleChar(word, possiblewords);
+                String found = checkProbableTranslation(word, 0, doubleCharList);
+                if (found != null) {
+                    addMap(word, found);
+                    return true;
                 }
             }
+            return false;
+        }
+
+        private boolean buildDictionaryProbableWords(String word) {
+            List<String> possiblewords = sizeDictionaryMap.get(word.length());
+            if (possiblewords == null && possiblewords.size() == 1) {
+                return false;
+            }
+
+            String found = checkProbableTranslation(word, 2, possiblewords.toArray(new String[0]));
+            if (found != null) {
+                addMap(word, found);
+                return true;
+            }
+            return false;
+
         }
 
         private void addMap(String fromWord, String toWord) {
@@ -126,15 +149,16 @@ public class BasicCryptanalysis {
             char[] to = toWord.toCharArray();
             for (int i = 0; i < to.length; i++) {
                 Character old = dictionaryMap.put(from[i], to[i]);
-                if (old != null) {
-                    if (old != to[i]) {
-                        System.out.println("error, redefined character '" + from[i] + "': from '" + old + "' to '" + to[i] + "'");
-                    } else {
-                        System.out.println("confirmed translation: for '" + from[i] + "' to '" + to[i] + "'");
-                    }
-                } else {
-                    System.out.println("new translation for '" + from[i] + "' to '" + to[i] + "'");
-                }
+                old = dictionaryMap.put(Character.toUpperCase(from[i]), Character.toUpperCase(to[i]));
+//                if (old != null) {
+//                    if (old != to[i]) {
+//                        System.out.println("error, redefined character '" + from[i] + "': from '" + old + "' to '" + to[i] + "'");
+//                    } else {
+//                        System.out.println("confirmed translation: for '" + from[i] + "' to '" + to[i] + "'");
+//                    }
+//                } else {
+//                    System.out.println("new translation for '" + from[i] + "' to '" + to[i] + "'");
+//                }
             }
         }
 
@@ -165,6 +189,67 @@ public class BasicCryptanalysis {
                 }
             }
             return returnValue;
+        }
+
+        private String[] filterWordsWithDoubleChar(String word, List<String> possiblewords) {
+            List<String> returnValue = new LinkedList<>();
+
+            int[] doublePosition = hasDoubleChar(word, 0);
+            if (doublePosition[0] != -1) {
+                String[] words = new String[possiblewords.size()];
+                words = possiblewords.toArray(words);
+
+                while (doublePosition[0] != -1) {
+                    for (String possibleword : words) {
+                        int[] foundDouble = hasDoubleChar(possibleword, doublePosition[0]);
+
+                        if (Arrays.equals(foundDouble, doublePosition)) {
+                            returnValue.add(possibleword);
+                        }
+                    }
+
+                    doublePosition = hasDoubleChar(word, 1 + doublePosition[0]);
+
+                    words = new String[returnValue.size()];
+                    words = returnValue.toArray(words);
+                    returnValue.clear();
+                }
+                return words;
+            }
+
+            return new String[0];
+        }
+
+        private String checkProbableTranslation(String word, int minimunIdx, String... doubleCharList) {
+
+            String found = null;
+            int foundIdx = 0;
+            for (String possibleword : doubleCharList) {
+                int newIdx = calculatePossibleIndex(word, possibleword);
+                if (newIdx == foundIdx) {
+//                    System.out.println("found same idx...");
+                    found = null;
+                } else if (newIdx > foundIdx && newIdx >= minimunIdx) {
+                    found = possibleword;
+                    foundIdx = newIdx;
+                }
+            }
+            return found;
+        }
+
+        private String translate(String word) {
+            StringBuilder sb = new StringBuilder();
+
+            char[] chars = word.toCharArray();
+            for (char c : chars) {
+                if (this.dictionaryMap.containsKey(c)) {
+                    sb.append(dictionaryMap.get(c));
+                } else {
+                    sb.append(c);
+                }
+            }
+
+            return sb.toString();
         }
     }
 }
