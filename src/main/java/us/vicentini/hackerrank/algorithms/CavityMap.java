@@ -1,4 +1,4 @@
-package com.hackerrank.algorithms;
+package us.vicentini.hackerrank.algorithms;
 
 import java.util.Scanner;
 
@@ -25,7 +25,6 @@ public class CavityMap {
 
     public static void main(String[] args) throws InterruptedException {
         Scanner myScan = new Scanner(System.in);
-//        Scanner myScan = new Scanner(CavityMap.class.getResourceAsStream("CavityMap.Input.txt"));
         int matrixSize = myScan.nextInt();
         char[][] original = new char[matrixSize][matrixSize];
         char[][] solution = new char[matrixSize][matrixSize];
