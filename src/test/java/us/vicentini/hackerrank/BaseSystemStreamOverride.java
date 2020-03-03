@@ -57,10 +57,11 @@ public abstract class BaseSystemStreamOverride {
     protected void assertInputStreams(InputStream expectedStream, InputStream actualStream) {
         Scanner expected = new Scanner(expectedStream);
         Scanner actual = new Scanner(actualStream);
+        int line = 1;
         while (expected.hasNext() && actual.hasNext()) {
             String expectedLine = expected.nextLine();
             String actualLine = actual.nextLine();
-            assertEquals(expectedLine, actualLine);
+            assertEquals(expectedLine, actualLine, "Line '" + (line++) + "' doesn't match!");
         }
         assertEquals(expected.hasNext(), actual.hasNext());
     }
