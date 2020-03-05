@@ -1,8 +1,8 @@
-package us.vicentini.hackerrank.ooprogramming;
+package us.vicentini.hackerrank.java.ooprogramming;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
 import java.security.Permission;
+import java.util.Scanner;
 
 /**
  * https://www.hackerrank.com/challenges/calculating-volume
