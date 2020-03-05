@@ -1,6 +1,6 @@
-package us.vicentini.hackerrank.datastructures;
+package us.vicentini.hackerrank.java.datastructures;
 
-import java.util.*;
+import java.util.Scanner;
 
 
 /**

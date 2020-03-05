@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package us.vicentini.hackerrank.datastructures;
+package us.vicentini.hackerrank.java.datastructures;
 
 import java.util.Arrays;
 import java.util.LinkedList;
