@@ -6,8 +6,6 @@ import us.vicentini.hackerrank.BaseSystemStreamOverride;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 class JavaLambdaExpressionsTest extends BaseSystemStreamOverride {
     @Test
     public void testCase01() throws IOException {
@@ -18,6 +16,5 @@ class JavaLambdaExpressionsTest extends BaseSystemStreamOverride {
         JavaLambdaExpressions.main(new String[0]);
 
         assertInputStreams(expectedStream, getOutputAsInputStream());
-        assertTrue(true);
     }
 }

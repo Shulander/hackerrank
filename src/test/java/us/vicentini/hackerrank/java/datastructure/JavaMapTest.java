@@ -5,8 +5,6 @@ import us.vicentini.hackerrank.BaseSystemStreamOverride;
 
 import java.io.InputStream;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 class JavaMapTest extends BaseSystemStreamOverride {
     @Test
     public void testCase01() {
@@ -17,6 +15,5 @@ class JavaMapTest extends BaseSystemStreamOverride {
         JavaMap.main(new String[0]);
 
         assertInputStreams(expectedStream, getOutputAsInputStream());
-        assertTrue(true);
     }
 }

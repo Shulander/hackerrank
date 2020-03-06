@@ -7,8 +7,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 class JavaFactoryPatternTest extends BaseSystemStreamOverride {
     @Test
     public void testCase01() throws IOException {
@@ -20,7 +18,6 @@ class JavaFactoryPatternTest extends BaseSystemStreamOverride {
         JavaFactoryPattern.main(new String[0]);
 
         assertInputStreams(expectedStream, getOutputAsInputStream());
-        assertTrue(true);
     }
 
 
@@ -34,6 +31,5 @@ class JavaFactoryPatternTest extends BaseSystemStreamOverride {
         JavaFactoryPattern.main(new String[0]);
 
         assertInputStreams(expectedStream, getOutputAsInputStream());
-        assertTrue(true);
     }
 }

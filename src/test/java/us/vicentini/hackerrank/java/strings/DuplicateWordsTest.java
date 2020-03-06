@@ -5,8 +5,6 @@ import us.vicentini.hackerrank.BaseSystemStreamOverride;
 
 import java.io.InputStream;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 class DuplicateWordsTest extends BaseSystemStreamOverride {
 
     @Test
@@ -18,6 +16,5 @@ class DuplicateWordsTest extends BaseSystemStreamOverride {
         DuplicateWords.main(new String[0]);
 
         assertInputStreams(expectedStream, getOutputAsInputStream());
-        assertTrue(true);
     }
 }

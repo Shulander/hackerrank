@@ -6,8 +6,6 @@ import us.vicentini.hackerrank.BaseSystemStreamOverride;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 class JavaStringTokensTest extends BaseSystemStreamOverride {
     @Test
     public void testCase01() {
@@ -18,7 +16,6 @@ class JavaStringTokensTest extends BaseSystemStreamOverride {
         JavaStringTokens.main(new String[0]);
 
         assertInputStreams(expectedStream, getOutputAsInputStream());
-        assertTrue(true);
     }
 
 
@@ -31,7 +28,6 @@ class JavaStringTokensTest extends BaseSystemStreamOverride {
         JavaStringTokens.main(new String[0]);
 
         assertInputStreams(expectedStream, getOutputAsInputStream());
-        assertTrue(true);
     }
 
 

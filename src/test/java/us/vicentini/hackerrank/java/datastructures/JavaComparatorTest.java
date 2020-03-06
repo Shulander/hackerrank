@@ -5,8 +5,6 @@ import us.vicentini.hackerrank.BaseSystemStreamOverride;
 
 import java.io.InputStream;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 class JavaComparatorTest extends BaseSystemStreamOverride {
 
     @Test
@@ -18,7 +16,6 @@ class JavaComparatorTest extends BaseSystemStreamOverride {
         JavaComparator.main(new String[0]);
 
         assertInputStreams(expectedStream, getOutputAsInputStream());
-        assertTrue(true);
     }
 
 }

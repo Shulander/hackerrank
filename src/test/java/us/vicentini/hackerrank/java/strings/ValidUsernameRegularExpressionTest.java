@@ -5,8 +5,6 @@ import us.vicentini.hackerrank.BaseSystemStreamOverride;
 
 import java.io.InputStream;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 class ValidUsernameRegularExpressionTest extends BaseSystemStreamOverride {
     @Test
     public void testCase01() {
@@ -17,7 +15,6 @@ class ValidUsernameRegularExpressionTest extends BaseSystemStreamOverride {
         ValidUsernameRegularExpression.main(new String[0]);
 
         assertInputStreams(expectedStream, getOutputAsInputStream());
-        assertTrue(true);
     }
 
 }

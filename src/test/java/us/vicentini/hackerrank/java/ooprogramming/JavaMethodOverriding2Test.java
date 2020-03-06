@@ -5,8 +5,6 @@ import us.vicentini.hackerrank.BaseSystemStreamOverride;
 
 import java.io.InputStream;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 class JavaMethodOverriding2Test extends BaseSystemStreamOverride {
 
     @Test
@@ -16,6 +14,5 @@ class JavaMethodOverriding2Test extends BaseSystemStreamOverride {
         JavaMethodOverriding2.main(new String[0]);
 
         assertInputStreams(expectedStream, getOutputAsInputStream());
-        assertTrue(true);
     }
 }
