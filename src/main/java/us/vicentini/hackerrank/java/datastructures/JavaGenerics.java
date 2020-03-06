@@ -1,4 +1,4 @@
-package us.vicentini.hackerrank.java.datastructure;
+package us.vicentini.hackerrank.java.datastructures;
 
 import java.lang.reflect.Method;
 
