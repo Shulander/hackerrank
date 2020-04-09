@@ -67,6 +67,13 @@ public abstract class BaseSystemStreamOverride {
     }
 
 
+    protected void assertExpectedOutput(String expectedOutput) {
+        InputStream expectedStream = new ByteArrayInputStream(expectedOutput.getBytes());
+        InputStream actualStream = getOutputAsInputStream();
+        assertInputStreams(expectedStream, actualStream);
+    }
+
+
     protected InputStream getResourceAsStream(String s) {
         return getClass().getResourceAsStream(s);
     }
