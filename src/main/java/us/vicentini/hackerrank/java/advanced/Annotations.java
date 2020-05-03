@@ -9,7 +9,6 @@ import java.lang.reflect.Method;
 import java.util.Scanner;
 
 /**
- *
  * @author Shulander
  */
 @Target(ElementType.METHOD)
@@ -21,6 +20,7 @@ import java.util.Scanner;
     int budgetLimit() default 100;
 }
 
+
 class FamilyMember {
 
     @FamilyBudget(budgetLimit = 100, userRole = "SENIOR")
@@ -30,6 +30,7 @@ class FamilyMember {
         System.out.println("Budget Left: " + (budget - moneySpend));
     }
 
+
     @FamilyBudget(budgetLimit = 50, userRole = "JUNIOR")
     public void juniorUser(int budget, int moneySpend) {
         System.out.println("Junior Member");
@@ -37,6 +38,7 @@ class FamilyMember {
         System.out.println("Budget Left: " + (budget - moneySpend));
     }
 }
+
 
 public class Annotations {
 
@@ -47,27 +49,32 @@ public class Annotations {
             String role = in.next();
             int spend = in.nextInt();
             try {
-                Class annotatedClass = FamilyMember.class;
+                Class<FamilyMember> annotatedClass = FamilyMember.class;
                 Method[] methods = annotatedClass.getMethods();
                 for (Method method : methods) {
-                    if (method.isAnnotationPresent(FamilyBudget.class)) {
-                        FamilyBudget family = method.getAnnotation(FamilyBudget.class);
-                        String userRole = family.userRole();
-                        int budgetLimit = family.budgetLimit();
-                        if (userRole.equals(role)) {
-                            if (spend <= budgetLimit) {
-                                method.invoke(FamilyMember.class.newInstance(), budgetLimit, spend);
-                            } else {
-                                System.out.println("Budget Limit Over");
-                            }
-                        }
-                    }
+                    checkBudget(method, role, spend);
                 }
-            } catch (SecurityException | InstantiationException | IllegalAccessException 
-                | IllegalArgumentException | InvocationTargetException ex) {
+            } catch (SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException ex) {
                 ex.printStackTrace();
             }
             testCases--;
+        }
+    }
+
+
+    private static void checkBudget(Method method, String role, int spend)
+            throws IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException {
+        if (method.isAnnotationPresent(FamilyBudget.class)) {
+            FamilyBudget family = method.getAnnotation(FamilyBudget.class);
+            String userRole = family.userRole();
+            int budgetLimit = family.budgetLimit();
+            if (userRole.equals(role)) {
+                if (spend <= budgetLimit) {
+                    method.invoke(FamilyMember.class.getDeclaredConstructor().newInstance(), budgetLimit, spend);
+                } else {
+                    System.out.println("Budget Limit Over");
+                }
+            }
         }
     }
 }
